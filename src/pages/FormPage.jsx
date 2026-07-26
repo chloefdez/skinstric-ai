@@ -5,15 +5,29 @@ function FormPage() {
   const [step, setStep] = useState("name");
   const [name, setName] = useState("");
   const [location, setLocation] = useState("");
+  const [nameError, setNameError] = useState("");
+  const [locationError, setLocationError] = useState("");
+
+  const isValidText = (value) => /^[a-zA-Z\s]+$/.test(value.trim());
 
   const handleNameKeyDown = (e) => {
-    if (e.key === "Enter" && name.trim() !== "") {
+    if (e.key === "Enter") {
+      if (!isValidText(name)) {
+        setNameError("Please enter letters only, no numbers or symbols.");
+        return;
+      }
+      setNameError("");
       setStep("location");
     }
   };
 
   const handleLocationKeyDown = async (e) => {
-    if (e.key === "Enter" && location.trim() !== "") {
+    if (e.key === "Enter") {
+      if (!isValidText(location)) {
+        setLocationError("Please enter letters only, no numbers or symbols.");
+        return;
+      }
+      setLocationError("");
       try {
         const response = await fetch(
           "https://us-central1-api-skinstric-ai.cloudfunctions.net/skinstricPhaseOne",
@@ -25,8 +39,6 @@ function FormPage() {
         );
         const data = await response.json();
         console.log("API response:", data);
-
-        // Save to local storage so other pages can access it later
         localStorage.setItem("skinstric_name", name);
         localStorage.setItem("skinstric_location", location);
       } catch (error) {
@@ -77,29 +89,43 @@ function FormPage() {
           </p>
 
           {step === "name" && (
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              onKeyDown={handleNameKeyDown}
-              autoFocus
-              placeholder="Introduce Yourself"
-              className="font-light border-b border-black text-center bg-transparent focus:outline-none"
-              style={{ fontSize: "48px" }}
-            />
+            <>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                onKeyDown={handleNameKeyDown}
+                autoFocus
+                placeholder="Introduce Yourself"
+                className="font-light border-b border-black text-center bg-transparent focus:outline-none"
+                style={{ fontSize: "48px" }}
+              />
+              {nameError && (
+                <p className="text-red-500 mt-2" style={{ fontSize: "12px" }}>
+                  {nameError}
+                </p>
+              )}
+            </>
           )}
 
           {step === "location" && (
-            <input
-              type="text"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              onKeyDown={handleLocationKeyDown}
-              autoFocus
-              placeholder="Your Location"
-              className="font-light border-b border-black text-center bg-transparent focus:outline-none"
-              style={{ fontSize: "48px" }}
-            />
+            <>
+              <input
+                type="text"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                onKeyDown={handleLocationKeyDown}
+                autoFocus
+                placeholder="Your Location"
+                className="font-light border-b border-black text-center bg-transparent focus:outline-none"
+                style={{ fontSize: "48px" }}
+              />
+              {locationError && (
+                <p className="text-red-500 mt-2" style={{ fontSize: "12px" }}>
+                  {locationError}
+                </p>
+              )}
+            </>
           )}
         </div>
       </div>
