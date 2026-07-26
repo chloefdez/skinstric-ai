@@ -79,8 +79,40 @@ function FormPage() {
         To Start Analysis
       </p>
 
-      <div className="flex-1 flex items-center justify-center">
-        <div className="text-center">
+      {/* Rotating Square 1 */}
+      <div className="flex-1 flex items-center justify-center relative">
+        <div
+          className="absolute pointer-events-none"
+          style={{
+            width: "500px",
+            height: "500px",
+            border: "3px dotted #8A8E96",
+            animation: "spin-slow 50s linear infinite",
+          }}
+        />
+        {/* Rotating Square 2 */}
+        <div
+          className="absolute pointer-events-none"
+          style={{
+            width: "500px",
+            height: "500px",
+            border: "3px dotted #B8BBC1",
+            transform: "rotate(20deg)",
+            animation: "spin-slow 65s linear infinite",
+          }}
+        />
+        {/* Rotating Square 3 */}
+        <div
+          className="absolute pointer-events-none"
+          style={{
+            width: "500px",
+            height: "500px",
+            border: "3px dotted #D6D8DC",
+            animation: "spin-slow 50s linear infinite reverse",
+          }}
+        />
+
+        <div className="text-center relative z-10">
           <p
             className="uppercase text-gray-400 mb-2"
             style={{ fontSize: "14px" }}
