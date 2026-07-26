@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
+import { useState } from "react";
 
 function IntroPage() {
+
+    const [hoveredSide, setHoveredSide] = useState(null);
 
   return (
     <div className="min-h-screen bg-white flex flex-col px-10 py-8">
@@ -28,7 +31,7 @@ function IntroPage() {
         </button>
       </header>
 
-      {/* Everything below the header shares this one box */}
+      {/* Everything below the header */}
       <div className="flex-1 relative">
         {/* Centered headline + subtext */}
         <main className="absolute inset-0 flex flex-col items-center justify-center gap-6 max-w-2xl mx-auto text-center">
@@ -38,6 +41,14 @@ function IntroPage() {
               fontSize: "100px",
               lineHeight: "120px",
               letterSpacing: "-7%",
+              animation: "fade-in 1.2s ease-in",
+              transform:
+                hoveredSide === "left"
+                  ? "translateX(35vw)"
+                  : hoveredSide === "right"
+                  ? "translateX(-35vw)"
+                  : "translateX(0)",
+              transition: "transform 0.4s ease",
             }}
           >
             Sophisticated skincare
@@ -55,9 +66,10 @@ function IntroPage() {
           Skinstric developed an A.I. that creates a highly-personalized routine
           tailored to what your skin needs.
         </p>
-        {/* Left diamond + label — centered on THIS box, same as headline */}
+
+        {/* Left diamond + label */}
         <div
-          className="absolute pointer-events-none"
+          className="absolute pointer-events-none transition-opacity duration-300"
           style={{
             left: -60,
             top: "50%",
@@ -65,11 +77,19 @@ function IntroPage() {
             height: "426px",
             border: "2px dotted #A0A4AB",
             transform: "translate(-50%, -50%) rotate(45deg)",
+            opacity: hoveredSide === "right" ? 0 : 1,
           }}
         />
         <div
-          className="absolute left-0 flex items-center gap-3"
-          style={{ top: "50%", transform: "translateY(-50%)" }}
+          className="absolute left-0 flex items-center gap-3 transition-all duration-300 hover:scale-110"
+          style={{
+            top: "50%",
+            transform: "translateY(-50%)",
+            opacity: hoveredSide === "right" ? 0 : 1,
+            pointerEvents: hoveredSide === "right" ? "none" : "auto",
+          }}
+          onMouseEnter={() => setHoveredSide("left")}
+          onMouseLeave={() => setHoveredSide(null)}
         >
           <div className="w-10 h-10 border border-black rotate-45 flex items-center justify-center">
             <span className="-rotate-45 text-xs">◀</span>
@@ -78,9 +98,10 @@ function IntroPage() {
             Discover A.I.
           </span>
         </div>
+
         {/* Right diamond + label */}
         <div
-          className="absolute pointer-events-none"
+          className="absolute pointer-events-none transition-opacity duration-300"
           style={{
             right: -60,
             top: "50%",
@@ -88,12 +109,20 @@ function IntroPage() {
             height: "426px",
             border: "2px dotted #A0A4AB",
             transform: "translate(50%, -50%) rotate(45deg)",
+            opacity: hoveredSide === "left" ? 0 : 1,
           }}
         />
         <Link
           to="/form"
-          className="absolute right-0 flex items-center gap-3"
-          style={{ top: "50%", transform: "translateY(-50%)" }}
+          className="absolute right-0 flex items-center gap-3 transition-all duration-300 hover:scale-110"
+          style={{
+            top: "50%",
+            transform: "translateY(-50%)",
+            opacity: hoveredSide === "left" ? 0 : 1,
+            pointerEvents: hoveredSide === "left" ? "none" : "auto",
+          }}
+          onMouseEnter={() => setHoveredSide("right")}
+          onMouseLeave={() => setHoveredSide(null)}
         >
           <span className="uppercase" style={{ fontSize: "14px" }}>
             Take Test
