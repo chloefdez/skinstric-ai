@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import Header from "../components/Header";
 
 function IntroPage() {
 
@@ -7,29 +8,8 @@ function IntroPage() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col px-10 py-8">
-      {/* Top bar */}
-      <header className="flex justify-between items-center z-10">
-        <div className="flex items-center gap-4">
-          <p
-            className="uppercase"
-            style={{ fontSize: "14px", fontWeight: 500, letterSpacing: "-2%" }}
-          >
-            SKINSTRIC
-          </p>
-          <span
-            className="uppercase text-gray-400"
-            style={{ fontSize: "14px" }}
-          >
-            [ INTRO ]
-          </span>
-        </div>
-        <button
-          className="bg-black text-white uppercase px-5 py-2"
-          style={{ fontSize: "14px" }}
-        >
-          Enter Code
-        </button>
-      </header>
+      {/* Header bar */}
+      <Header />
 
       {/* Everything below the header */}
       <div className="flex-1 relative">
@@ -112,6 +92,7 @@ function IntroPage() {
             opacity: hoveredSide === "left" ? 0 : 1,
           }}
         />
+
         <Link
           to="/form"
           className="absolute right-0 flex items-center gap-3 transition-all duration-300 hover:scale-110"
@@ -131,6 +112,7 @@ function IntroPage() {
             <span className="-rotate-45 text-xs">▶</span>
           </div>
         </Link>
+
       </div>
     </div>
   );

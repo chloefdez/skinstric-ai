@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import Header from "../components/Header";
 
 function FormPage() {
   const [step, setStep] = useState("name");
@@ -7,6 +9,7 @@ function FormPage() {
   const [location, setLocation] = useState("");
   const [nameError, setNameError] = useState("");
   const [locationError, setLocationError] = useState("");
+  const navigate = useNavigate();
 
   const isValidText = (value) => /^[a-zA-Z\s]+$/.test(value.trim());
 
@@ -40,7 +43,8 @@ function FormPage() {
         const data = await response.json();
         console.log("API response:", data);
         localStorage.setItem("skinstric_name", name);
-        localStorage.setItem("skinstric_location", location);
+        localStorage.setItem("skinstric_location", location)
+        navigate("/proceed");
       } catch (error) {
         console.error("Error submitting form:", error);
       }
@@ -49,29 +53,8 @@ function FormPage() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col px-10 py-8">
-      <header className="flex justify-between items-center z-10">
-        <div className="flex items-center gap-4">
-          <p
-            className="uppercase"
-            style={{ fontSize: "14px", fontWeight: 500, letterSpacing: "-2%" }}
-          >
-            SKINSTRIC
-          </p>
-          <span
-            className="uppercase text-gray-400"
-            style={{ fontSize: "14px" }}
-          >
-            [ INTRO ]
-          </span>
-        </div>
-        <button
-          className="bg-black text-white uppercase px-5 py-2"
-          style={{ fontSize: "14px" }}
-        >
-          Enter Code
-        </button>
-      </header>
-
+      <Header />
+      
       <p
         className="uppercase mt-6"
         style={{ fontSize: "14px", fontWeight: 500 }}
