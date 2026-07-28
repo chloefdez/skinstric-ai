@@ -15,6 +15,8 @@ function PhotoCapture() {
   const videoRef = useRef(null);
   const galleryInputRef = useRef(null);
   const [showPermissionModal, setShowPermissionModal] = useState(false);
+  const [isReviewing, setIsReviewing] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -40,21 +42,28 @@ function PhotoCapture() {
     }
   };
 
-  useEffect(() => {
-    if (videoRef.current && stream) {
-      videoRef.current.srcObject = stream;
-    }
-  }, [stream]);
+  const handleSubmitImage = async () => {
+    setIsAnalyzing(true);
+    try {
+      const response = await fetch(
+        "https://us-central1-api-skinstric-ai.cloudfunctions.net/skinstricPhaseTwo",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ image: base64Image }),
+        }
+      );
 
-  useEffect(() => {
-    if (isCameraOpen) {
-      const timer = setTimeout(() => {
-        setMinTimeElapsed(true);
-      }, 1500);
-
-      return () => clearTimeout(timer);
+      const data = await response.json();
+      console.log(data);
+    } catch (error) {
+      console.error("Error submitting image:", error);
+    } finally {
+      setIsAnalyzing(false);
     }
-  }, [isCameraOpen]);
+  };
 
   const handleCloseCamera = () => {
     if (stream) {
@@ -79,10 +88,37 @@ function PhotoCapture() {
     setImagePreview(dataUrl);
     setBase64Image(dataUrl.split(",")[1]);
 
-    handleCloseCamera();
+    if (stream) {
+      stream.getTracks().forEach((track) => track.stop());
+    }
+    setStream(null);
+    setIsReviewing(true);
   };
 
+    const handleRetake = () => {
+        setImagePreview(null);
+        setBase64Image(null);
+        setIsReviewing(false);
+        handleScanFace();
+    };
+
   const showCamera = isCameraReady && minTimeElapsed;
+
+   useEffect(() => {
+     if (videoRef.current && stream) {
+       videoRef.current.srcObject = stream;
+     }
+   }, [stream]);
+
+   useEffect(() => {
+     if (isCameraOpen) {
+       const timer = setTimeout(() => {
+         setMinTimeElapsed(true);
+       }, 1500);
+
+       return () => clearTimeout(timer);
+     }
+   }, [isCameraOpen]);
 
   return (
     <div className="h-screen bg-white flex flex-col px-10 py-8 overflow-hidden">
@@ -95,18 +131,6 @@ function PhotoCapture() {
           >
             To Start Analysis
           </p>
-        )}
-        {imagePreview && (
-          <div>
-            <p className="text-gray-400 mb-1" style={{ fontSize: "12px" }}>
-              Preview
-            </p>
-            <img
-              src={imagePreview}
-              alt="Preview"
-              className="w-24 h-24 border border-gray-300 object-cover"
-            />
-          </div>
         )}
       </div>
 
@@ -175,61 +199,137 @@ function PhotoCapture() {
             style={{ display: showCamera ? "block" : "none" }}
           />
 
-              {/* Helper text, bottom of video */}
-              <div className="absolute bottom-8 left-0 right-0 text-center">
-                <p
-                    className={`uppercase ${showCamera ? "text-white" : "text-gray-400"}`}
-                    style={{ fontSize: "12px" }}
-                >
-                    To get better results make sure to have
-                </p>
-                <div className="flex justify-center gap-6 mt-2">
+          {isReviewing && (
+            <div className="absolute inset-0 bg-black flex flex-col items-center justify-center">
+              <img
+                src={imagePreview}
+                alt="Captured"
+                className="w-full h-full object-cover absolute inset-0"
+              />
+              {isAnalyzing && (
+                <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center z-20">
+                  <p
+                    className="uppercase text-white mb-3"
+                    style={{ fontSize: "14px" }}
+                  >
+                    Analyzing image
+                  </p>
+                  <div className="flex gap-2">
                     <span
-                    className={`uppercase ${showCamera ? "text-white" : "text-gray-400"}`}
-                    style={{ fontSize: "12px" }}
-                    >
-                    ◇ Neutral Expression
-                    </span>
+                      className="w-2 h-2 bg-white rounded-full"
+                      style={{
+                        animation: "bounce-dot 1.4s ease-in-out infinite",
+                        animationDelay: "0s",
+                      }}
+                    />
                     <span
-                    className={`uppercase ${showCamera ? "text-white" : "text-gray-400"}`}
-                    style={{ fontSize: "12px" }}
-                    >
-                    ◇ Frontal Pose
-                    </span>
+                      className="w-2 h-2 bg-white rounded-full"
+                      style={{
+                        animation: "bounce-dot 1.4s ease-in-out infinite",
+                        animationDelay: "0.2s",
+                      }}
+                    />
                     <span
-                    className={`uppercase ${showCamera ? "text-white" : "text-gray-400"}`}
-                    style={{ fontSize: "12px" }}
-                    >
-                    ◇ Adequate Lighting
-                    </span>
+                      className="w-2 h-2 bg-white rounded-full"
+                      style={{
+                        animation: "bounce-dot 1.4s ease-in-out infinite",
+                        animationDelay: "0.4s",
+                      }}
+                    />
+                  </div>
                 </div>
-                </div>
+              )}
+              <p
+                className="uppercase text-white relative z-10"
+                style={{ fontSize: "14px" }}
+              >
+                Great shot!
+              </p>
 
-            {showCamera && (
+              <div className="absolute bottom-8 left-0 right-0 flex justify-center gap-4 z-10">
+                <button
+                  onClick={handleRetake}
+                  className="uppercase px-6 py-3 bg-white text-black"
+                  style={{ fontSize: "12px" }}
+                >
+                  Retake
+                </button>
+                <button
+                  onClick={handleSubmitImage}
+                  className="uppercase px-6 py-3 bg-black text-white border border-white"
+                  style={{ fontSize: "12px" }}
+                >
+                  Use This Photo
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Helper text, bottom of video */}
+          {!isReviewing && (
+            <div className="absolute bottom-8 left-0 right-0 text-center">
+              <p
+                className={`uppercase ${
+                  showCamera ? "text-white" : "text-gray-400"
+                }`}
+                style={{ fontSize: "12px" }}
+              >
+                To get better results make sure to have
+              </p>
+              <div className="flex justify-center gap-6 mt-2">
+                <span
+                  className={`uppercase ${
+                    showCamera ? "text-white" : "text-gray-400"
+                  }`}
+                  style={{ fontSize: "12px" }}
+                >
+                  ◇ Neutral Expression
+                </span>
+                <span
+                  className={`uppercase ${
+                    showCamera ? "text-white" : "text-gray-400"
+                  }`}
+                  style={{ fontSize: "12px" }}
+                >
+                  ◇ Frontal Pose
+                </span>
+                <span
+                  className={`uppercase ${
+                    showCamera ? "text-white" : "text-gray-400"
+                  }`}
+                  style={{ fontSize: "12px" }}
+                >
+                  ◇ Adequate Lighting
+                </span>
+              </div>
+            </div>
+          )}
+
+          {showCamera && !isReviewing && (
             <div
-                className="absolute flex items-center gap-3 cursor-pointer"
-                style={{
+              className="absolute flex items-center gap-3 cursor-pointer"
+              style={{
                 right: "40px",
                 top: "50%",
                 transform: "translateY(-50%)",
-                }}
-                onClick={handleCapture}
+              }}
+              onClick={handleCapture}
             >
-                <span
+              <span
                 className="uppercase text-white"
                 style={{ fontSize: "12px" }}
-                >
+              >
                 Take Picture
-                </span>
-                <div className="w-16 h-16 border-white flex items-center justify-center">
+              </span>
+              <div className="w-16 h-16 border-white flex items-center justify-center">
                 <img
-                    src={takePictureIcon}
-                    alt="Capture"
-                    className="w-16 h-16"
+                  src={takePictureIcon}
+                  alt="Capture"
+                  className="w-16 h-16"
                 />
-                </div>
+              </div>
             </div>
-            )}
+          )}
         </div>
       ) : (
         /* ---------- ICON SELECTION VIEW ---------- */
