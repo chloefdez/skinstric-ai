@@ -50,7 +50,6 @@ function PhotoCapture() {
         <div
           className="relative cursor-pointer flex items-center justify-center"
           style={{ width: "300px", height: "300px" }}
-          onClick={() => cameraInputRef.current.click()}
         >
           <div
             className="absolute pointer-events-none"
@@ -170,6 +169,14 @@ function PhotoCapture() {
           </span>
         </div>
 
+        <input
+          type="file"
+          accept="image/*"
+          capture="user"
+          ref={cameraInputRef}
+          onChange={handleFileChange}
+          className="hidden"
+        />
         <input
           type="file"
           accept="image/*"
