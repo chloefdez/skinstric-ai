@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import cameraIcon from "../assets/camera-icon.png";
 import galleryIcon from "../assets/gallery.png";
@@ -17,18 +17,21 @@ function PhotoCapture() {
   const [showPermissionModal, setShowPermissionModal] = useState(false);
   const [isReviewing, setIsReviewing] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const navigate = useNavigate();
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+ const handleFileChange = (e) => {
+   const file = e.target.files[0];
+   if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = () => {
-      setImagePreview(reader.result);
-      setBase64Image(reader.result.split(",")[1]);
-    };
-    reader.readAsDataURL(file);
-  };
+   const reader = new FileReader();
+   reader.onload = () => {
+     setImagePreview(reader.result);
+     setBase64Image(reader.result.split(",")[1]);
+     setIsCameraOpen(true);
+     setIsReviewing(true);
+   };
+   reader.readAsDataURL(file);
+ };
 
   const handleScanFace = async () => {
     try {
@@ -57,7 +60,9 @@ function PhotoCapture() {
       );
 
       const data = await response.json();
-      console.log(data);
+      localStorage.setItem("skinstricAnalysis", JSON.stringify(data));
+      navigate("/results");
+
     } catch (error) {
       console.error("Error submitting image:", error);
     } finally {
