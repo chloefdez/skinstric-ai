@@ -61,7 +61,7 @@ function ProceedPage() {
           </span>
         </Link>
 
-        <Link to="/phase-two" className="flex items-center gap-3">
+        <Link to="/photo" className="flex items-center gap-3">
           <span className="uppercase" style={{ fontSize: "14px" }}>
             Proceed
           </span>
