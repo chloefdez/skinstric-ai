@@ -19,19 +19,19 @@ function PhotoCapture() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const navigate = useNavigate();
 
- const handleFileChange = (e) => {
-   const file = e.target.files[0];
-   if (!file) return;
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
 
-   const reader = new FileReader();
-   reader.onload = () => {
-     setImagePreview(reader.result);
-     setBase64Image(reader.result.split(",")[1]);
-     setIsCameraOpen(true);
-     setIsReviewing(true);
-   };
-   reader.readAsDataURL(file);
- };
+    const reader = new FileReader();
+    reader.onload = () => {
+      setImagePreview(reader.result);
+      setBase64Image(reader.result.split(",")[1]);
+      setIsCameraOpen(true);
+      setIsReviewing(true);
+    };
+    reader.readAsDataURL(file);
+  };
 
   const handleScanFace = async () => {
     try {
@@ -62,7 +62,6 @@ function PhotoCapture() {
       const data = await response.json();
       localStorage.setItem("skinstricAnalysis", JSON.stringify(data));
       navigate("/results");
-
     } catch (error) {
       console.error("Error submitting image:", error);
     } finally {
@@ -78,7 +77,6 @@ function PhotoCapture() {
     setIsCameraOpen(false);
     setIsCameraReady(false);
     setMinTimeElapsed(false);
-
   };
 
   const handleCapture = () => {
@@ -100,33 +98,33 @@ function PhotoCapture() {
     setIsReviewing(true);
   };
 
-    const handleRetake = () => {
-        setImagePreview(null);
-        setBase64Image(null);
-        setIsReviewing(false);
-        handleScanFace();
-    };
+  const handleRetake = () => {
+    setImagePreview(null);
+    setBase64Image(null);
+    setIsReviewing(false);
+    handleScanFace();
+  };
 
   const showCamera = isCameraReady && minTimeElapsed;
 
-   useEffect(() => {
-     if (videoRef.current && stream) {
-       videoRef.current.srcObject = stream;
-     }
-   }, [stream]);
+  useEffect(() => {
+    if (videoRef.current && stream) {
+      videoRef.current.srcObject = stream;
+    }
+  }, [stream]);
 
-   useEffect(() => {
-     if (isCameraOpen) {
-       const timer = setTimeout(() => {
-         setMinTimeElapsed(true);
-       }, 1500);
+  useEffect(() => {
+    if (isCameraOpen) {
+      const timer = setTimeout(() => {
+        setMinTimeElapsed(true);
+      }, 1500);
 
-       return () => clearTimeout(timer);
-     }
-   }, [isCameraOpen]);
+      return () => clearTimeout(timer);
+    }
+  }, [isCameraOpen]);
 
   return (
-    <div className="h-screen bg-white flex flex-col px-10 py-8 overflow-hidden">
+    <div className="h-screen bg-white flex flex-col px-4 md:px-10 py-8 overflow-hidden">
       <Header />
       <div className="flex justify-between items-start mt-6">
         {!isCameraOpen && (
@@ -140,8 +138,8 @@ function PhotoCapture() {
       </div>
 
       {isCameraOpen ? (
-        /* ---------- CAMERA VIEW ---------- */
-        <div className="flex-1 relative -mx-10 min-h-0">
+        /* CAMERA VIEW */
+        <div className="flex-1 relative -mx-4 md:-mx-10 min-h-0">
           {isCameraOpen && (
             <Link
               to="/proceed"
@@ -251,18 +249,18 @@ function PhotoCapture() {
                 Great shot!
               </p>
 
-              <div className="absolute bottom-8 left-0 right-0 flex justify-center gap-4 z-10">
+              <div className="absolute bottom-20 md:bottom-8 left-0 right-0 flex justify-center gap-3 z-10 px-4">
                 <button
                   onClick={handleRetake}
-                  className="uppercase px-6 py-3 bg-white text-black"
-                  style={{ fontSize: "12px" }}
+                  className="uppercase px-3 md:px-6 py-2 md:py-3 bg-white text-black"
+                  style={{ fontSize: "10px" }}
                 >
                   Retake
                 </button>
                 <button
                   onClick={handleSubmitImage}
-                  className="uppercase px-6 py-3 bg-black text-white border border-white"
-                  style={{ fontSize: "12px" }}
+                  className="uppercase px-3 md:px-6 py-2 md:py-3 bg-black text-white border border-white"
+                  style={{ fontSize: "10px" }}
                 >
                   Use This Photo
                 </button>
@@ -272,7 +270,8 @@ function PhotoCapture() {
 
           {/* Helper text, bottom of video */}
           {!isReviewing && (
-            <div className="absolute bottom-8 left-0 right-0 text-center">
+            <div className="absolute bottom-24 md:bottom-8 left-0 right-0 text-center px-4">
+              {" "}
               <p
                 className={`uppercase ${
                   showCamera ? "text-white" : "text-gray-400"
@@ -281,7 +280,7 @@ function PhotoCapture() {
               >
                 To get better results make sure to have
               </p>
-              <div className="flex justify-center gap-6 mt-2">
+              <div className="flex flex-wrap justify-center gap-3 md:gap-6 mt-2">
                 <span
                   className={`uppercase ${
                     showCamera ? "text-white" : "text-gray-400"
@@ -314,69 +313,65 @@ function PhotoCapture() {
             <div
               className="absolute flex items-center gap-3 cursor-pointer"
               style={{
-                right: "40px",
+                right: "20px",
                 top: "50%",
                 transform: "translateY(-50%)",
               }}
               onClick={handleCapture}
             >
               <span
-                className="uppercase text-white"
+                className="uppercase text-white hidden md:inline"
                 style={{ fontSize: "12px" }}
               >
                 Take Picture
               </span>
-              <div className="w-16 h-16 border-white flex items-center justify-center">
+              <div className="w-12 h-12 md:w-16 md:h-16 border-white flex items-center justify-center">
                 <img
                   src={takePictureIcon}
                   alt="Capture"
-                  className="w-16 h-16"
+                  className="w-12 h-12 md:w-16 md:h-16"
                 />
               </div>
             </div>
           )}
         </div>
       ) : (
-        /* ---------- ICON SELECTION VIEW ---------- */
-        <div className="flex-1 flex items-center justify-center gap-64 relative">
+        /* ICON SELECTION VIEW */
+        <div className="flex-1 flex flex-col md:flex-row items-center justify-center gap-26 md:gap-32 relative">
           {/* Scan face option */}
           <div
-            className="relative cursor-pointer flex items-center justify-center"
-            style={{ width: "300px", height: "300px" }}
+            className="relative cursor-pointer flex items-center justify-center w-[180px] h-[180px] md:w-[300px] md:h-[300px]"
             onClick={() => setShowPermissionModal(true)}
           >
             <div
-              className="absolute pointer-events-none"
+              className="absolute pointer-events-none w-[180px] h-[180px] md:w-[300px] md:h-[300px]"
               style={{
-                width: "300px",
-                height: "300px",
                 border: "3px dotted #8A8E96",
                 animation: "spin-slow 50s linear infinite",
+                animationDelay: "0s",
               }}
             />
             <div
-              className="absolute pointer-events-none"
+              className="absolute pointer-events-none w-[180px] h-[180px] md:w-[300px] md:h-[300px]"
               style={{
-                width: "300px",
-                height: "300px",
                 border: "3px dotted #B8BBC1",
                 transform: "rotate(20deg)",
                 animation: "spin-slow 65s linear infinite",
+                animationDelay: "0s",
               }}
             />
             <div
-              className="absolute pointer-events-none"
+              className="absolute pointer-events-none w-[180px] h-[180px] md:w-[300px] md:h-[300px]"
               style={{
-                width: "300px",
-                height: "300px",
                 border: "3px dotted #D6D8DC",
                 animation: "spin-slow 50s linear infinite reverse",
+                animationDelay: "0s",
               }}
             />
             <img
               src={cameraIcon}
               alt="Scan face"
-              className="w-32 h-32 absolute z-10"
+              className="w-20 h-20 md:w-32 md:h-32 absolute z-10"
               style={{
                 top: "50%",
                 left: "50%",
@@ -387,7 +382,7 @@ function PhotoCapture() {
               className="uppercase absolute z-10 text-center"
               style={{
                 fontSize: "12px",
-                bottom: "30px",
+                bottom: "20px",
                 left: "50%",
                 transform: "translateX(-50%)",
                 whiteSpace: "nowrap",
@@ -398,37 +393,29 @@ function PhotoCapture() {
               to scan your face
             </span>
           </div>
-
           {/* Gallery option */}
           <div
-            className="relative cursor-pointer flex items-center justify-center"
-            style={{ width: "300px", height: "300px" }}
+            className="relative cursor-pointer flex items-center justify-center w-[180px] h-[180px] md:w-[300px] md:h-[300px]"
             onClick={() => galleryInputRef.current.click()}
           >
             <div
-              className="absolute pointer-events-none"
+              className="absolute pointer-events-none w-[180px] h-[180px] md:w-[300px] md:h-[300px]"
               style={{
-                width: "300px",
-                height: "300px",
                 border: "3px dotted #8A8E96",
                 animation: "spin-slow 50s linear infinite",
               }}
             />
             <div
-              className="absolute pointer-events-none"
+              className="absolute pointer-events-none w-[180px] h-[180px] md:w-[300px] md:h-[300px]"
               style={{
-                width: "300px",
-                height: "300px",
                 border: "3px dotted #B8BBC1",
                 transform: "rotate(20deg)",
                 animation: "spin-slow 65s linear infinite",
               }}
             />
             <div
-              className="absolute pointer-events-none"
+              className="absolute pointer-events-none w-[180px] h-[180px] md:w-[300px] md:h-[300px]"
               style={{
-                width: "300px",
-                height: "300px",
                 border: "3px dotted #D6D8DC",
                 animation: "spin-slow 50s linear infinite reverse",
               }}
@@ -436,7 +423,7 @@ function PhotoCapture() {
             <img
               src={galleryIcon}
               alt="Access gallery"
-              className="w-32 h-32 absolute z-10"
+              className="w-20 h-20 md:w-32 md:h-32 absolute z-10"
               style={{
                 top: "50%",
                 left: "50%",
@@ -447,7 +434,7 @@ function PhotoCapture() {
               className="uppercase absolute z-10 text-center"
               style={{
                 fontSize: "12px",
-                bottom: "30px",
+                bottom: "20px",
                 left: "50%",
                 transform: "translateX(-50%)",
                 whiteSpace: "nowrap",
@@ -458,7 +445,6 @@ function PhotoCapture() {
               access gallery
             </span>
           </div>
-
           <input
             type="file"
             accept="image/*"
@@ -482,17 +468,11 @@ function PhotoCapture() {
 
       {showPermissionModal && (
         <div
-          className="fixed inset-0 z-50"
+          className="fixed inset-0 z-50 flex items-center justify-center px-4"
           onClick={() => setShowPermissionModal(false)}
         >
           <div
-            className="absolute bg-black text-white"
-            style={{
-              width: "360px",
-              top: "50%",
-              left: "calc(50% - 460px)",
-              transform: "translateY(-50%)",
-            }}
+            className="bg-black text-white w-full max-w-[360px]"
             onClick={(e) => e.stopPropagation()}
           >
             <p

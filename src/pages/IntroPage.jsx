@@ -3,35 +3,37 @@ import { useState } from "react";
 import Header from "../components/Header";
 
 function IntroPage() {
-
-    const [hoveredSide, setHoveredSide] = useState(null);
+  const [hoveredSide, setHoveredSide] = useState(null);
 
   return (
     <div className="min-h-screen bg-white flex flex-col px-10 py-8">
-      {/* Header bar */}
+      {/* Header */}
       <Header />
 
-      {/* Everything below the header */}
       <div className="flex-1 relative">
         {/* Centered headline + subtext */}
-        <main className="absolute inset-0 flex flex-col items-center justify-center gap-6 max-w-2xl mx-auto text-center">
+        <main
+          className={`absolute inset-0 flex flex-col gap-6 text-center px-6 md:px-16 transition-all duration-500 ${
+            hoveredSide === "left"
+              ? "items-end justify-center text-right"
+              : hoveredSide === "right"
+              ? "items-start justify-center text-left"
+              : "items-center justify-center text-center"
+          }`}
+        >
+          {" "}
           <h1
             className="font-light text-[#1A1B1C]"
             style={{
-              fontSize: "100px",
-              lineHeight: "120px",
+              fontSize: "clamp(2.5rem, 8vw, 6.25rem)",
+              lineHeight: "1.15",
               letterSpacing: "-7%",
               animation: "fade-in 1.2s ease-in",
-              transform:
-                hoveredSide === "left"
-                  ? "translateX(35vw)"
-                  : hoveredSide === "right"
-                  ? "translateX(-35vw)"
-                  : "translateX(0)",
-              transition: "transform 0.4s ease",
             }}
           >
-            Sophisticated skincare
+            Sophisticated
+            <br />
+            skincare
           </h1>
         </main>
         <p
@@ -49,7 +51,7 @@ function IntroPage() {
 
         {/* Left diamond + label */}
         <div
-          className="absolute pointer-events-none transition-opacity duration-300"
+          className="absolute pointer-events-none transition-opacity duration-300 hidden md:block"
           style={{
             left: -60,
             top: "50%",
@@ -61,10 +63,8 @@ function IntroPage() {
           }}
         />
         <div
-          className="absolute left-0 flex items-center gap-3 transition-all duration-300 hover:scale-110"
+          className="absolute left-4 bottom-32 md:left-0 md:top-1/2 md:bottom-auto md:-translate-y-1/2 flex items-center gap-3 transition-all duration-300 hover:scale-110"
           style={{
-            top: "50%",
-            transform: "translateY(-50%)",
             opacity: hoveredSide === "right" ? 0 : 1,
             pointerEvents: hoveredSide === "right" ? "none" : "auto",
           }}
@@ -81,7 +81,7 @@ function IntroPage() {
 
         {/* Right diamond + label */}
         <div
-          className="absolute pointer-events-none transition-opacity duration-300"
+          className="absolute pointer-events-none transition-opacity duration-300 hidden md:block"
           style={{
             right: -60,
             top: "50%",
@@ -95,10 +95,8 @@ function IntroPage() {
 
         <Link
           to="/form"
-          className="absolute right-0 flex items-center gap-3 transition-all duration-300 hover:scale-110"
+          className="absolute right-4 bottom-32 md:right-0 md:top-1/2 md:bottom-auto md:-translate-y-1/2 flex items-center gap-3 transition-all duration-300 hover:scale-110"
           style={{
-            top: "50%",
-            transform: "translateY(-50%)",
             opacity: hoveredSide === "left" ? 0 : 1,
             pointerEvents: hoveredSide === "left" ? "none" : "auto",
           }}
@@ -112,7 +110,6 @@ function IntroPage() {
             <span className="-rotate-45 text-xs">▶</span>
           </div>
         </Link>
-
       </div>
     </div>
   );

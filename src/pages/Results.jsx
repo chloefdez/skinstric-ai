@@ -39,14 +39,12 @@ function Results() {
         Fix estimated information if needed.
       </p>
 
-      <div className="flex-1 flex items-center justify-center">
-        <div className="relative" style={{ width: "398px", height: "398px" }}>
+      <div className="flex-1 flex items-center justify-center overflow-hidden">
+        <div className="relative w-[398px] h-[398px] scale-[0.65] sm:scale-[0.85] md:scale-100 origin-center">
           {/* Outer dotted diamond - fades in/out based on hover state */}
           <div
-            className="absolute pointer-events-none transition-all duration-300 ease-out"
+            className="absolute pointer-events-none transition-all duration-300 ease-out w-[398px] h-[398px]"
             style={{
-              width: "398px",
-              height: "398px",
               top: "0px",
               left: "0px",
               border: "2px dotted #A0A4AB",
@@ -56,7 +54,6 @@ function Results() {
               opacity: hoveredDiamond ? 1 : 0,
             }}
           />
-
           {/* Demographics - top */}
           <div
             onClick={() => navigate("/summary")}
@@ -81,7 +78,6 @@ function Results() {
               Demographics
             </span>
           </div>
-
           {/* Cosmetic Concerns - left */}
           <div
             onMouseEnter={() => handleDiamondEnter("cosmetic concerns")}
@@ -107,7 +103,6 @@ function Results() {
               Concerns
             </span>
           </div>
-
           {/* Skin Type Details - right */}
           <div
             onMouseEnter={() => handleDiamondEnter("skin type details")}
@@ -133,7 +128,6 @@ function Results() {
               Details
             </span>
           </div>
-
           {/* Weather - bottom */}
           <div
             onMouseEnter={() => handleDiamondEnter("weather")}
@@ -160,7 +154,7 @@ function Results() {
         </div>
       </div>
 
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center px-2">
         <Link to="/photo" className="flex items-center gap-3">
           <div className="w-10 h-10 border border-black rotate-45 flex items-center justify-center">
             <span className="-rotate-45 text-xs">◀</span>

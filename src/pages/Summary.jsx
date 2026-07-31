@@ -81,18 +81,18 @@ function Summary() {
         Predicted Race & Age
       </p>
 
-      <div className="flex mt-10 border-t border-gray-200">
+      <div className="flex flex-col md:flex-row mt-10 border-t border-gray-200">
         {/* Left sidebar - category tabs */}
-        <div style={{ width: "220px" }} className="border-r border-gray-200">
+        <div className="w-full md:w-[220px] flex md:block border-b md:border-b-0 md:border-r border-gray-200">
           <div
             onClick={() => setActiveCategory("race")}
-            className={`px-6 py-6 cursor-pointer transition-colors ${
+            className={`flex-1 px-4 md:px-6 py-4 md:py-6 cursor-pointer transition-colors ${
               activeCategory === "race"
                 ? "bg-black text-white"
-                : "border-b border-gray-200 hover:bg-gray-200"
+                : "border-r md:border-r-0 md:border-b border-gray-200 hover:bg-gray-200"
             }`}
           >
-            <p style={{ fontSize: "18px" }} className="capitalize">
+            <p style={{ fontSize: "16px" }} className="capitalize truncate">
               {activeRaceLabel}
             </p>
             <p
@@ -105,13 +105,13 @@ function Summary() {
 
           <div
             onClick={() => setActiveCategory("age")}
-            className={`px-6 py-6 cursor-pointer transition-colors ${
+            className={`flex-1 px-4 md:px-6 py-4 md:py-6 cursor-pointer transition-colors ${
               activeCategory === "age"
                 ? "bg-black text-white"
-                : "border-b border-gray-200 hover:bg-gray-200"
+                : "border-r md:border-r-0 md:border-b border-gray-200 hover:bg-gray-200"
             }`}
           >
-            <p style={{ fontSize: "18px" }} className="capitalize">
+            <p style={{ fontSize: "16px" }} className="capitalize truncate">
               {activeAgeLabel}
             </p>
             <p
@@ -124,13 +124,13 @@ function Summary() {
 
           <div
             onClick={() => setActiveCategory("sex")}
-            className={`px-6 py-6 cursor-pointer transition-colors ${
+            className={`flex-1 px-4 md:px-6 py-4 md:py-6 cursor-pointer transition-colors ${
               activeCategory === "sex"
                 ? "bg-black text-white"
                 : "hover:bg-gray-200"
             }`}
           >
-            <p style={{ fontSize: "18px" }} className="capitalize">
+            <p style={{ fontSize: "16px" }} className="capitalize truncate">
               {activeSexLabel}
             </p>
             <p
@@ -143,16 +143,19 @@ function Summary() {
         </div>
 
         {/* Center - selected category display */}
-        <div className="flex-1 bg-gray-100 flex flex-col items-center justify-center gap-6">
-          <p style={{ fontSize: "32px" }} className="capitalize">
+        <div className="flex-1 bg-gray-100 flex flex-col items-center justify-center gap-6 py-10 md:py-0">
+          <p
+            style={{ fontSize: "28px" }}
+            className="capitalize text-center px-4"
+          >
             {current.label}
             {activeCategory === "age" && (
               <span className="normal-case"> y.o.</span>
-            )}{" "}
+            )}
           </p>
 
-          <div className="relative">
-            <svg width="500" height="500" viewBox="0 0 500 500">
+          <div className="relative w-[240px] h-[240px] md:w-[500px] md:h-[500px]">
+            <svg width="100%" height="100%" viewBox="0 0 500 500">
               <circle
                 cx="250"
                 cy="250"
@@ -175,14 +178,16 @@ function Summary() {
               />
             </svg>
             <div className="absolute inset-0 flex items-center justify-center">
-              <p style={{ fontSize: "48px" }}>{current.percent}%</p>{" "}
+              <p style={{ fontSize: "36px" }} className="md:text-[48px]">
+                {current.percent}%
+              </p>
             </div>
           </div>
         </div>
 
         {/* Right - full list with confidence % */}
-        <div style={{ width: "300px" }} className="border-l border-gray-200">
-          <div className="flex justify-between px-6 py-4 border-b border-gray-200">
+        <div className="w-full md:w-[300px] border-t md:border-t-0 md:border-l border-gray-200">
+          <div className="flex justify-between px-4 md:px-6 py-4 border-b border-gray-200">
             <span className="uppercase" style={{ fontSize: "12px" }}>
               {current.key}
             </span>
@@ -198,7 +203,7 @@ function Summary() {
             <div
               key={label}
               onClick={() => current.setSelected([label, value])}
-              className={`flex justify-between px-6 py-4 capitalize cursor-pointer transition-colors ${
+              className={`flex justify-between px-4 md:px-6 py-4 capitalize cursor-pointer transition-colors ${
                 current.label === label
                   ? "bg-black text-white"
                   : "border-b border-gray-100 hover:bg-gray-200"
@@ -211,7 +216,7 @@ function Summary() {
         </div>
       </div>
 
-      <div className="flex justify-between items-center mt-10">
+      <div className="flex justify-between items-center mt-10 fixed md:static bottom-0 left-0 right-0 bg-white px-4 md:px-0 py-4 md:py-0 border-t md:border-t-0 border-gray-200 z-20">
         <Link to="/results" className="flex items-center gap-3">
           <div className="w-10 h-10 border border-black rotate-45 flex items-center justify-center">
             <span className="-rotate-45 text-xs">◀</span>
