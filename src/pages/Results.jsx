@@ -1,11 +1,28 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useState, useRef } from "react";
 import Header from "../components/Header";
 
 function Results() {
   const storedData = localStorage.getItem("skinstricAnalysis");
   const analysis = storedData ? JSON.parse(storedData) : null;
 
-  console.log(analysis);
+  const navigate = useNavigate();
+  const [hoveredDiamond, setHoveredDiamond] = useState(null);
+  const hoverTimeout = useRef(null);
+
+  const handleDiamondEnter = (id) => {
+    if (hoverTimeout.current) clearTimeout(hoverTimeout.current);
+    if (hoveredDiamond === null) {
+        setHoveredDiamond(id);
+    } else {
+        setHoveredDiamond(null);
+        hoverTimeout.current = setTimeout(() => setHoveredDiamond(id), 300);
+    }
+    };
+
+  const handleDiamondLeave = () => {
+    hoverTimeout.current = setTimeout(() => setHoveredDiamond(null), 0);
+    };
 
   return (
     <div className="min-h-screen bg-white flex flex-col px-10 py-8">
@@ -16,17 +33,36 @@ function Results() {
       >
         A.I. Analysis
       </p>
-      <p className="uppercase mt-2" style={{fontSize:"12px"}}>
-      A.I.has estimated the following.
-      <br />
-      Fix estimated information if needed. 
+      <p className="uppercase mt-2" style={{ fontSize: "12px" }}>
+        A.I.has estimated the following.
+        <br />
+        Fix estimated information if needed.
       </p>
 
       <div className="flex-1 flex items-center justify-center">
-        <div className="relative" style={{ width: "418px", height: "418px" }}>
+        <div className="relative" style={{ width: "398px", height: "398px" }}>
+          {/* Outer dotted diamond - fades in/out based on hover state */}
+          <div
+            className="absolute pointer-events-none transition-all duration-300 ease-out"
+            style={{
+              width: "398px",
+              height: "398px",
+              top: "0px",
+              left: "0px",
+              border: "2px dotted #A0A4AB",
+              transform: hoveredDiamond
+                ? "rotate(45deg) scale(1)"
+                : "rotate(45deg) scale(0.85)",
+              opacity: hoveredDiamond ? 1 : 0,
+            }}
+          />
+
           {/* Demographics - top */}
           <div
-            className="absolute bg-gray-300 flex items-center justify-center"
+            onClick={() => navigate("/summary")}
+            onMouseEnter={() => handleDiamondEnter("demographics")}
+            onMouseLeave={handleDiamondLeave}
+            className="absolute bg-gray-300 flex items-center justify-center cursor-pointer transition-transform duration-300 hover:scale-105"
             style={{
               width: "160px",
               height: "160px",
@@ -48,7 +84,9 @@ function Results() {
 
           {/* Cosmetic Concerns - left */}
           <div
-            className="absolute bg-gray-100 flex items-center justify-center cursor-not-allowed"
+            onMouseEnter={() => handleDiamondEnter("cosmetic concerns")}
+            onMouseLeave={handleDiamondLeave}
+            className="absolute bg-gray-100 flex items-center justify-center cursor-not-allowed transition-transform duration-300 hover:scale-105"
             style={{
               width: "160px",
               height: "160px",
@@ -72,7 +110,9 @@ function Results() {
 
           {/* Skin Type Details - right */}
           <div
-            className="absolute bg-gray-100 flex items-center justify-center cursor-not-allowed"
+            onMouseEnter={() => handleDiamondEnter("skin type details")}
+            onMouseLeave={handleDiamondLeave}
+            className="absolute bg-gray-100 flex items-center justify-center cursor-not-allowed transition-transform duration-300 hover:scale-105"
             style={{
               width: "160px",
               height: "160px",
@@ -96,7 +136,9 @@ function Results() {
 
           {/* Weather - bottom */}
           <div
-            className="absolute bg-gray-100 flex items-center justify-center cursor-not-allowed"
+            onMouseEnter={() => handleDiamondEnter("weather")}
+            onMouseLeave={handleDiamondLeave}
+            className="absolute bg-gray-100 flex items-center justify-center cursor-not-allowed transition-transform duration-300 hover:scale-105"
             style={{
               width: "160px",
               height: "160px",
@@ -128,14 +170,14 @@ function Results() {
           </span>
         </Link>
 
-        <div className="flex items-center gap-3 cursor-pointer">
+        <Link to="/summary" className="flex items-center gap-3">
           <span className="uppercase" style={{ fontSize: "14px" }}>
             Get Summary
           </span>
           <div className="w-10 h-10 border border-black rotate-45 flex items-center justify-center">
             <span className="-rotate-45 text-xs">▶</span>
           </div>
-        </div>
+        </Link>
       </div>
     </div>
   );
