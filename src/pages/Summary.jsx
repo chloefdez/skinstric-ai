@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useState } from "react";
 import Header from "../components/Header";
 
 function Summary() {
@@ -6,6 +7,28 @@ function Summary() {
   const analysis = storedData ? JSON.parse(storedData) : null;
 
   console.log(analysis);
+
+function getSortedEntries(obj) {
+  if (!obj) return [];
+  return Object.entries(obj).sort((a, b) => b[1] - a[1]);
+}
+
+const sortedRace = analysis ? getSortedEntries(analysis.data.race) : [];
+const topRace = sortedRace[0]; // ["black", 0.402...]
+const topRaceLabel = topRace ? topRace[0] : "";
+const topRacePercent = topRace ? Math.round(topRace[1] * 100) : 0;
+const [selectedRace, setSelectedRace] = useState(null); 
+const activeRace = selectedRace || topRace;
+const activeRaceLabel = activeRace ? activeRace[0] : "";
+const activeRacePercent = activeRace ? Math.round(activeRace[1] * 100) : 0;
+
+
+console.log(topRaceLabel, topRacePercent);
+
+if (analysis) {
+  console.log(getSortedEntries(analysis.data.race));
+}
+
 
   return (
     <div className="min-h-screen bg-white flex flex-col px-10 py-8">
@@ -23,11 +46,14 @@ function Summary() {
       <p className="uppercase text-gray-400" style={{ fontSize: "12px" }}>
         Predicted Race & Age
       </p>
+
       <div className="flex mt-10 border-t border-gray-200">
         {/* Left sidebar - category tabs */}
         <div style={{ width: "220px" }} className="border-r border-gray-200">
           <div className="bg-black text-white px-6 py-6">
-            <p style={{ fontSize: "18px" }}>East asian</p>
+            <p style={{ fontSize: "18px" }} className="capitalize">
+              {activeRaceLabel}
+            </p>
             <p
               className="uppercase text-gray-400 mt-1"
               style={{ fontSize: "10px" }}
@@ -56,8 +82,38 @@ function Summary() {
         </div>
 
         {/* Center - selected category display */}
-        <div className="flex-1 bg-gray-100 flex items-center justify-center">
-          <p style={{ fontSize: "32px" }}>East asian</p>
+        <div className="flex-1 bg-gray-100 flex flex-col items-center justify-center gap-6">
+          <p style={{ fontSize: "32px" }} className="capitalize">
+            {activeRaceLabel}
+          </p>
+
+          <div className="relative">
+            <svg width="500" height="500" viewBox="0 0 500 500">
+              <circle
+                cx="250"
+                cy="250"
+                r="210"
+                fill="none"
+                stroke="#e5e5e5"
+                strokeWidth="6"
+              />
+              <circle
+                cx="250"
+                cy="250"
+                r="210"
+                fill="none"
+                stroke="black"
+                strokeWidth="6"
+                strokeDasharray="1319.5"
+                strokeDashoffset={1319.5 * (1 - activeRacePercent / 100)}
+                transform="rotate(-90 250 250)"
+                style={{ transition: "stroke-dashoffset 0.6s ease-in-out" }}
+              />
+            </svg>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <p style={{ fontSize: "48px" }}>{activeRacePercent}%</p>{" "}
+            </div>
+          </div>
         </div>
 
         {/* Right - full list with confidence % */}
@@ -73,10 +129,21 @@ function Summary() {
               A.I. Confidence
             </span>
           </div>
-          <div className="flex justify-between px-6 py-4 bg-black text-white">
-            <span>East asian</span>
-            <span>87%</span>
-          </div>
+
+          {sortedRace.map(([race, value]) => (
+            <div
+              key={race}
+              onClick={() => setSelectedRace([race, value])}
+              className={`flex justify-between px-6 py-4 capitalize cursor-pointer transition-colors ${
+                activeRaceLabel === race
+                  ? "bg-black text-white"
+                  : "border-b border-gray-100 hover:bg-gray-200"
+              }`}
+            >
+              <span>{race}</span>
+              <span>{Math.round(value * 100)}%</span>
+            </div>
+          ))}
         </div>
       </div>
     </div>
