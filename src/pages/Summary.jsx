@@ -146,6 +146,9 @@ function Summary() {
         <div className="flex-1 bg-gray-100 flex flex-col items-center justify-center gap-6">
           <p style={{ fontSize: "32px" }} className="capitalize">
             {current.label}
+            {activeCategory === "age" && (
+              <span className="normal-case"> y.o.</span>
+            )}{" "}
           </p>
 
           <div className="relative">
