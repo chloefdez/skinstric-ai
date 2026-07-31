@@ -131,7 +131,7 @@ function FormPage() {
                     autoFocus
                     placeholder="Introduce Yourself"
                     className="font-light border-b border-black text-center bg-transparent focus:outline-none w-full max-w-xs md:max-w-md"
-                    style={{ fontSize: "clamp(1.75rem, 6vw, 3rem)" }}
+                    style={{ fontSize: "clamp(1.25rem, 6vw, 3rem)" }}
                   />
                   {nameError && (
                     <p
@@ -154,7 +154,7 @@ function FormPage() {
                     autoFocus
                     placeholder="Your Location"
                     className="font-light border-b border-black text-center bg-transparent focus:outline-none w-full max-w-xs md:max-w-md"
-                    style={{ fontSize: "clamp(1.75rem, 6vw, 3rem)" }}
+                    style={{ fontSize: "clamp(1.25rem, 6vw, 3rem)" }}
                   />
                   {locationError && (
                     <p
